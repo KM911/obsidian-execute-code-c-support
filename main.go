@@ -11,10 +11,23 @@ import (
 var (
 	cpp_temp = filepath.Join(util.EXECUTE_PATH, "temp.cpp")
 	exe_temp = filepath.Join(util.EXECUTE_PATH, "temp.exe")
+	CC       = ""
 )
 
 func init() {
 	// TODO Read config file
+
+	if util.ExecuteSilent("g++ --version") == 0 {
+		CC = "g++ "
+		return
+	}
+
+	if util.ExecuteSilent("clang++ --version") == 0 {
+		CC = "clang++ "
+		return
+	}
+	println("No C++ compiler found")
+	os.Exit(1)
 }
 
 func HelpMessage() {
@@ -31,7 +44,7 @@ func Execute() {
 	// TODO Read compiler flag and could choose compiler
 
 	util.CreatFile(cpp_temp, strings.Join(os.Args[5:], "\n"))
-	command := "g++ " + cpp_temp + " -o " + exe_temp + " && " + exe_temp
+	command := CC + cpp_temp + " -o " + exe_temp + " && " + exe_temp
 	util.Execute(command)
 	os.Remove(cpp_temp)
 	os.Remove(exe_temp)

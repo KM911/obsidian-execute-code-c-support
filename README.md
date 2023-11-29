@@ -5,14 +5,14 @@ Use gcc/clang instead of cling in [obsidian-execute-code](https://github.com/twi
 ## Require
 
 * c/c++ compiler, g++
-* close wsl model use main func
+* close `wsl model` and `use main func`
 
 ![1701233709365](image/README/1701233709365.png)
 
 
 ## Install
 
-1. download from github releases
+1. download from [github releases](https://github.com/KM911/obsidian-execute-code-c-support/releases)
 2. go install
 
 ```bash

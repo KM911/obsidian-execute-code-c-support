@@ -7,8 +7,6 @@ OS := $(shell go env GOOS)
 .PHONY:build linux win all clean upx install-lint lint callvis-install callvis proxy pprof 
 
 
-
-
 build:
 	@if [ $(OS) = "windows" ]; then \
 		go build -ldflags "-s -w" -o $(project).exe; \
