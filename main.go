@@ -60,3 +60,7 @@ func main() {
 		Execute()
 	}
 }
+
+//  Hi guys , I try to write a adaptor for obsidian-execute-code to support C/C++. you could use g++ or clang++ to compile and run your code instead of cling.
+
+// I hope this could be helpful for you.

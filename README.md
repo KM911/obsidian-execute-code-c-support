@@ -4,8 +4,8 @@ Use gcc/clang instead of cling in [obsidian-execute-code](https://github.com/twi
 
 ## Require
 
-* c/c++ compiler, g++
-* close `wsl model` and `use main func`
+* c/c++ compiler
+* close options `wsl model `and `use main func`
 
 ![1701233709365](image/README/1701233709365.png)
 
@@ -24,5 +24,4 @@ go install github.com/KM911/obsidian-execute-code-c-support@latest
 
 ## TODO
 
-* [ ] Read compiler flags
-* [ ] Choose compiler, now only use g++
+* [ ] compiler flags
