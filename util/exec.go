@@ -3,19 +3,57 @@ package util
 import (
 	"os"
 	"os/exec"
+	"runtime"
 )
 
-func Execute(command string) int {
-	cmd_executor := exec.Command("cmd", "/C", command)
-	cmd_executor.Stdout = os.Stdout
-	cmd_executor.Stdin = os.Stdin
-	cmd_executor.Stderr = os.Stderr
-	cmd_executor.Run()
-	return cmd_executor.ProcessState.ExitCode()
+var (
+	CreateCommand func(command string) *exec.Cmd
+)
+
+func init() {
+	if runtime.GOOS == "windows" {
+		CreateCommand = createCmd
+	} else {
+		CreateCommand = createBash
+	}
 }
 
-func ExecuteSilent(command string) int {
-	cmd_executor := exec.Command("cmd", "/C", command)
-	cmd_executor.Run()
-	return cmd_executor.ProcessState.ExitCode()
+func redriectStd(cmd *exec.Cmd) {
+	cmd.Stdout = os.Stdout
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+}
+
+func createCmd(command string) *exec.Cmd {
+	return exec.Command("cmd", "/C", command)
+}
+
+func createBash(command string) *exec.Cmd {
+	return exec.Command("bash", "-c", command)
+}
+
+func ExecuteCommand(command string) int {
+	cmdExecutor := CreateCommand(command)
+	redriectStd(cmdExecutor)
+	cmdExecutor.Run()
+	return cmdExecutor.ProcessState.ExitCode()
+}
+
+func ExecuteCommandSilent(command string) int {
+	cmdExecutor := CreateCommand(command)
+	cmdExecutor.Run()
+	return cmdExecutor.ProcessState.ExitCode()
+}
+
+func ExecuteCommandResult(command string) string {
+	cmdExecutor := CreateCommand(command)
+	redriectStd(cmdExecutor)
+	output, _ := cmdExecutor.Output()
+	return string(output)
+}
+
+func ExecuteCommandSilentResult(command string) string {
+	cmdExecutor := CreateCommand(command)
+	output, _ := cmdExecutor.Output()
+	return string(output)
 }

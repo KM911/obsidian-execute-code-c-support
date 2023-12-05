@@ -9,32 +9,33 @@ import (
 )
 
 var (
-	cpp_temp = filepath.Join(util.EXECUTE_PATH, "temp.cpp")
-	exe_temp = filepath.Join(util.EXECUTE_PATH, "temp.exe")
-	CC       = ""
+	CppTemp       = filepath.Join(util.ExecuteDirectory, "temp.cpp")
+	ExeTemp       = filepath.Join(util.ExecuteDirectory, "temp.exe")
+	StringBuilder = strings.Builder{}
+	CC            = ""
 )
 
 func init() {
-	// TODO Read config file
 
-	if util.ExecuteSilent("g++ --version") == 0 {
+	// detect c compiler
+	if util.ExecuteCommandSilent("clang++ --version") == 0 {
+		CC = "clang++ "
+		return
+	}
+
+	if util.ExecuteCommandSilent("g++ --version") == 0 {
 		CC = "g++ "
 		return
 	}
 
-	if util.ExecuteSilent("clang++ --version") == 0 {
-		CC = "clang++ "
-		return
-	}
 	println("No C++ compiler found")
 	os.Exit(1)
 }
 
-func HelpMessage() {
+func helpMessage() {
 
 }
-func DisplayArgs() {
-	println("args: ", len(os.Args))
+func displayArgs() {
 	for index, arg := range os.Args {
 		println(index, arg)
 	}
@@ -43,24 +44,24 @@ func DisplayArgs() {
 func Execute() {
 	// TODO Read compiler flag and could choose compiler
 
-	util.CreatFile(cpp_temp, strings.Join(os.Args[5:], "\n"))
-	command := CC + cpp_temp + " -o " + exe_temp + " && " + exe_temp
-	util.Execute(command)
-	os.Remove(cpp_temp)
-	os.Remove(exe_temp)
+	index := 2
+	for !strings.HasPrefix(os.Args[index], "#") {
+		index++
+	}
+	util.CreatFile(CppTemp, strings.Join(os.Args[index:], "\n"))
+	command := CC + CppTemp + " -o " + ExeTemp + " && " + ExeTemp
+	util.ExecuteCommand(command)
+	os.Remove(CppTemp)
+	os.Remove(ExeTemp)
 }
+
 func main() {
-	// DisplayArgs()
 	argc := len(os.Args)
 	switch argc {
 	case 1:
 		println("no args")
-		HelpMessage()
+		helpMessage()
 	default:
 		Execute()
 	}
 }
-
-//  Hi guys , I try to write a adaptor for obsidian-execute-code to support C/C++. you could use g++ or clang++ to compile and run your code instead of cling.
-
-// I hope this could be helpful for you.
