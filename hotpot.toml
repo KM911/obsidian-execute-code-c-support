@@ -1,6 +1,6 @@
 Delay = 2000
-Command = 'make'
+Command = 'make move'
 WatchFiles = ['go']
 IgnoreFolders = ['node_modules', 'vendor', '.git', '.idea', '.vscode', 'log', 'build', 'dist', 'bin', 'public', 'target', 'output']
-ShowEvent = false
+ShowEvent = true
 Github = 'https://github.com/KM911/hotpot'

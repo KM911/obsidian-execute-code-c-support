@@ -57,3 +57,7 @@ func ExecuteCommandSilentResult(command string) string {
 	output, _ := cmdExecutor.Output()
 	return string(output)
 }
+
+func KillByName(name string) {
+	ExecuteCommandSilent("taskkill /F /IM " + name)
+}

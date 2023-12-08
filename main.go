@@ -18,13 +18,12 @@ var (
 func init() {
 
 	// detect c compiler
-	if util.ExecuteCommandSilent("clang++ --version") == 0 {
-		CC = "clang++ "
-		return
-	}
-
 	if util.ExecuteCommandSilent("g++ --version") == 0 {
 		CC = "g++ "
+		return
+	}
+	if util.ExecuteCommandSilent("clang++ --version") == 0 {
+		CC = "clang++ "
 		return
 	}
 
@@ -48,8 +47,11 @@ func Execute() {
 	for !strings.HasPrefix(os.Args[index], "#") {
 		index++
 	}
+	// to prevent the previous program do not exit
+	util.KillByName("temp.exe")
 	util.CreatFile(CppTemp, strings.Join(os.Args[index:], "\n"))
 	command := CC + CppTemp + " -o " + ExeTemp + " && " + ExeTemp
+	print("\u200b")
 	util.ExecuteCommand(command)
 	os.Remove(CppTemp)
 	os.Remove(ExeTemp)
@@ -64,4 +66,6 @@ func main() {
 	default:
 		Execute()
 	}
+	// 感觉程序的执行效率有一点点低下?? 是我的错觉吗
+
 }

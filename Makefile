@@ -19,6 +19,9 @@ build:
 		./$(project); \
 	fi
 
+move:build
+	
+	mv ./$(project).exe /cygdrive/d/tool/$(project).exe 
 
 release:
 	@go build -ldflags "-s -w" -tags release
