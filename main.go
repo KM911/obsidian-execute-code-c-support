@@ -1,11 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 
 	"github.com/KM911/obsidian-execute-code-c-support/util"
+)
+
+const (
+	VERSION = "0.04"
 )
 
 var (
@@ -16,12 +22,15 @@ var (
 )
 
 func init() {
+	util.FileLogger(filepath.Join(util.ExecuteDirectory, "obsidian-execute-code-c-support.log"))
 
 	// detect c compiler
+
 	if util.ExecuteCommandSilent("g++ --version") == 0 {
 		CC = "g++ "
 		return
 	}
+
 	if util.ExecuteCommandSilent("clang++ --version") == 0 {
 		CC = "clang++ "
 		return
@@ -32,7 +41,9 @@ func init() {
 }
 
 func helpMessage() {
-
+	fmt.Println("version : ", VERSION)
+	fmt.Println("author : KM911")
+	fmt.Println("github : https://github.com/KM911/obsidian-execute-code-c-support")
 }
 func displayArgs() {
 	for index, arg := range os.Args {
@@ -44,13 +55,18 @@ func Execute() {
 	// TODO Read compiler flag and could choose compiler
 
 	index := 2
-	for !strings.HasPrefix(os.Args[index], "#") {
+	for index < len(os.Args) && !strings.HasPrefix(os.Args[index], "#") {
 		index++
+	}
+	if index == len(os.Args) {
+		fmt.Println("Please disable the option \"Use main function\"")
+		log.Fatal("out of args range")
+		return
 	}
 	// to prevent the previous program do not exit
 	util.KillByName("temp.exe")
 	util.CreatFile(CppTemp, strings.Join(os.Args[index:], "\n"))
-	command := CC + CppTemp + " -o " + ExeTemp + " && " + ExeTemp
+	command := CC + CppTemp + " -w -o " + ExeTemp + " && " + ExeTemp
 	print("\u200b")
 	util.ExecuteCommand(command)
 	os.Remove(CppTemp)
@@ -59,13 +75,11 @@ func Execute() {
 
 func main() {
 	argc := len(os.Args)
+	//displayArgs()
 	switch argc {
 	case 1:
-		println("no args")
 		helpMessage()
 	default:
 		Execute()
 	}
-	// 感觉程序的执行效率有一点点低下?? 是我的错觉吗
-
 }
